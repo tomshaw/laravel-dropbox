@@ -14,7 +14,7 @@ class DropboxFiles extends DropboxResource
         ], headers: $this->getRequestHeaders());
     }
 
-    public function listFolder(string $path): ?array
+    public function listFolder(string $path = ''): ?array
     {
         return $this->client->post(Endpoints::Base->value.'files/list_folder', [
             'path' => $path,

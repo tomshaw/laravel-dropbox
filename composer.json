@@ -1,0 +1,62 @@
+{
+    "name": "tomshaw/laravel-dropbox",
+    "description": "A Laravel Dropbox API client library.",
+    "keywords": [
+        "laravel",
+        "dropbox"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Shaw",
+            "email": "tomshaw@tomshaw.us",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1|^8.2",
+        "illuminate/support": "^10.0|^11.0",
+        "guzzlehttp/guzzle": "^6|^7"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9",
+        "laravel/pint": "^1.10|^2.0",
+        "mockery/mockery": "^1.4.4",
+        "orchestra/testbench": "^8.5|^9.0",
+        "pestphp/pest": "^2.8|^3.0",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.1.1|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TomShaw\\Dropbox\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TomShaw\\Dropbox\\Tests\\": "tests"
+        }
+    },
+    "scripts" : {
+        "analyse" : "vendor/bin/phpstan analyse",
+        "baseline": "vendor/bin/phpstan analyse --ansi --memory-limit=-1 --generate-baseline --allow-empty-baseline",
+        "test" : "vendor/bin/pest",
+        "format": "vendor/bin/pint --config pint.json"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TomShaw\\Dropbox\\Providers\\DropboxServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true,
+        "process-timeout": 600
+    }
+}

@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('uid')->nullable();
             $table->string('account_id')->nullable();
             $table->text('scope')->nullable();
-            $table->timestamps();
         });
     }
 

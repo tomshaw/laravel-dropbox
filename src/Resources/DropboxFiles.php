@@ -78,13 +78,15 @@ class DropboxFiles extends DropboxResource
 
     public function upload(string $path, array $contents, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
     {
-        return $this->client->post(Endpoints::Content->value.'files/upload', [
+        $arguments = [
             'path' => $path,
             'mode' => $mode,
             'autorename' => $autorename,
             'mute' => $mute,
             'strict_conflict' => $strictConflict,
-        ], $contents, headers: $this->getRequestHeaders());
+        ];
+
+        return $this->client->post(Endpoints::Content->value.'files/upload', body: $contents, headers: array_merge($this->getArgumentHeaders($arguments), $this->getRequestHeaders(contentType: 'application/octet-stream')));
     }
 
     public function download(string $path): ?array

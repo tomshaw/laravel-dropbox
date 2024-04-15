@@ -24,31 +24,31 @@ trait HttpRequests
         ];
     }
 
-    public function post(string $endpoint, array $body = [], array $params = [], array $headers = []): ?array
+    public function post(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
     {
-        return $this->sendRequest('POST', $endpoint, $body, $params, $headers);
+        return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
     }
 
-    public function get(string $endpoint, array $body = [], array $params = [], array $headers = []): ?array
+    public function get(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
     {
-        return $this->sendRequest('GET', $endpoint, $body, $params, $headers);
+        return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
     }
 
-    public function put(string $endpoint, array $body = [], array $params = [], array $headers = []): ?array
+    public function put(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
     {
-        return $this->sendRequest('PUT', $endpoint, $body, $params, $headers);
+        return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
     }
 
-    public function delete(string $endpoint, array $body = [], array $params = [], array $headers = []): ?array
+    public function delete(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
     {
-        return $this->sendRequest('DELETE', $endpoint, $body, $params, $headers);
+        return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
     }
 
-    public function sendRequest(string $method, string $endpoint, array $body = [], array $params = [], array $headers = []): ?array
+    public function sendRequest(string $method, string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
     {
         $this->builder->setMethod($method)->setUrl($endpoint);
 
-        if (count($body)) {
+        if ($body) {
             $this->builder->setBody($body);
         }
 
@@ -57,9 +57,7 @@ trait HttpRequests
         }
 
         if (count($headers)) {
-            foreach ($headers as $key => $value) {
-                $this->builder->setHeader($key, $value);
-            }
+            $this->builder->setHeaders($headers);
         }
 
         return $this->builder->send();

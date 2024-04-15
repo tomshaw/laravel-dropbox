@@ -6,13 +6,17 @@ use TomShaw\Dropbox\Enums\Endpoints;
 
 class DropboxCheck extends DropboxResource
 {
-    public function app(array $options = []): ?array
+    public function app(array $body = []): ?array
     {
-        return $this->client->post(Endpoints::Base->value.'check/app', body: $options, headers: $this->getRequestHeaders(true));
+        $this->client->headers(basic: true);
+
+        return $this->client->post(Endpoints::Base->value.'check/app', $body);
     }
 
-    public function user($options = []): ?array
+    public function user($body = []): ?array
     {
-        return $this->client->post(Endpoints::Base->value.'check/user', body: $options, headers: $this->getRequestHeaders(true));
+        $this->client->headers(basic: true);
+
+        return $this->client->post(Endpoints::Base->value.'check/user', $body);
     }
 }

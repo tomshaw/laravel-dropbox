@@ -4,62 +4,97 @@ namespace TomShaw\Dropbox\Traits;
 
 trait HttpRequests
 {
-    public function getContentType(string $contentType = 'application/json'): array
+    protected array $headers = [];
+
+    public function setContentType(string $contentType = 'application/json'): self
     {
-        return [
-            'Content-Type' => $contentType,
-        ];
+        $this->headers['Content-Type'] = $contentType;
+
+        return $this;
     }
 
-    public function getAuthorizationHeader(bool $authTypeBasic = false): array
+    public function addAuthorizationBasic(): self
     {
-        if ($authTypeBasic) {
-            return [
-                'Authorization' => 'Basic '.base64_encode(config('dropbox.clientId').':'.config('dropbox.clientSecret')),
-            ];
+        $this->headers['Authorization'] = 'Basic '.base64_encode(config('dropbox.clientId').':'.config('dropbox.clientSecret'));
+
+        return $this;
+    }
+
+    public function addAuthorizationBearer(): self
+    {
+        $this->headers['Authorization'] = 'Bearer '.$this->getAccessToken()->get('access_token');
+
+        return $this;
+    }
+
+    public function addApiArguments(array $arguments): self
+    {
+        $this->headers['Dropbox-API-Arg'] = json_encode($arguments);
+
+        return $this;
+    }
+
+    public function headers(bool $bearer = false, bool $basic = false, ?string $contentType = 'application/json', array $arguments = []): self
+    {
+        if ($bearer) {
+            $this->addAuthorizationBearer();
         }
 
-        return [
-            'Authorization' => 'Bearer '.$this->getAccessToken()->get('access_token'),
+        if ($basic) {
+            $this->addAuthorizationBasic();
+        }
+
+        if ($contentType) {
+            $this->setContentType($contentType);
+        }
+
+        if (count($arguments)) {
+            $this->addApiArguments($arguments);
+        }
+
+        return $this;
+    }
+
+    public function post(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    {
+        return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+    }
+
+    public function get(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    {
+        return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+    }
+
+    public function put(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    {
+        return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+    }
+
+    public function delete(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    {
+        return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+    }
+
+    public function sendRequest(string $method, string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    {
+        $options = [
+            'headers' => $this->headers,
         ];
-    }
 
-    public function post(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
-    {
-        return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
-    }
-
-    public function get(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
-    {
-        return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
-    }
-
-    public function put(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
-    {
-        return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
-    }
-
-    public function delete(string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
-    {
-        return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params, headers: $headers);
-    }
-
-    public function sendRequest(string $method, string $endpoint, mixed $body = null, array $params = [], array $headers = []): ?array
-    {
-        $this->builder->setMethod($method)->setUrl($endpoint);
-
-        if ($body) {
-            $this->builder->setBody($body);
+        if (is_resource($contents)) {
+            $options['body'] = $contents;
+        } else {
+            $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
         }
 
         if (count($params)) {
-            $this->builder->setParams($params);
+            $options['form_params'] = $params;
         }
 
-        if (count($headers)) {
-            $this->builder->setHeaders($headers);
-        }
+        $response = $this->client->request($method, $endpoint, $options);
 
-        return $this->builder->send();
+        $this->headers = [];
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 }

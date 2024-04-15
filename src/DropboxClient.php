@@ -12,15 +12,11 @@ class DropboxClient
 {
     use HttpRequests;
 
-    protected RequestBuilder $builder;
-
     protected StorageAdapterInterface $storageAdapter;
 
     public function __construct(
         protected client $client,
     ) {
-        $this->builder = new RequestBuilder($client);
-
         $this->setStorage(app(config('dropbox.storage')));
     }
 

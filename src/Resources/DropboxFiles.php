@@ -112,25 +112,23 @@ class DropboxFiles extends DropboxResource
             throw new \InvalidArgumentException('Contents must be a valid resource');
         }
 
-        $arguments = [
+        $this->client->headers(bearer: true, contentType: 'application/octet-stream', arguments: [
             'path' => $path,
             'mode' => $mode,
             'autorename' => $autorename,
             'mute' => $mute,
             'strict_conflict' => $strictConflict,
-        ];
-
-        $this->client->headers(bearer: true, contentType: 'application/octet-stream', arguments: $arguments);
+        ]);
 
         return $this->client->post(Endpoints::Content->value.'files/upload', contents: $contents);
     }
 
-    public function download(string $path): ?array
+    public function download(string $path): string
     {
-        $this->client->headers(bearer: true);
-
-        return $this->client->post(Endpoints::Content->value.'files/download', [
+        $this->client->headers(bearer: true, contentType: null, arguments: [
             'path' => $path,
         ]);
+
+        return $this->client->post(Endpoints::Content->value.'files/download');
     }
 }

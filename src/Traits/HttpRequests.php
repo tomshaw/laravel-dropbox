@@ -55,27 +55,27 @@ trait HttpRequests
         return $this;
     }
 
-    public function post(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    public function post(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
     {
         return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
     }
 
-    public function get(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    public function get(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
     {
         return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
     }
 
-    public function put(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    public function put(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
     {
         return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
     }
 
-    public function delete(string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    public function delete(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
     {
         return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
     }
 
-    public function sendRequest(string $method, string $endpoint, array $body = [], array $params = [], mixed $contents = null): ?array
+    public function sendRequest(string $method, string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
     {
         $options = [
             'headers' => $this->headers,
@@ -83,7 +83,9 @@ trait HttpRequests
 
         if (is_resource($contents)) {
             $options['body'] = $contents;
-        } else {
+        }
+
+        if (! in_array('Dropbox-API-Arg', array_keys($this->headers))) {
             $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
         }
 
@@ -93,8 +95,14 @@ trait HttpRequests
 
         $response = $this->client->request($method, $endpoint, $options);
 
+        $body = $response->getBody()->getContents();
+
         $this->headers = [];
 
-        return json_decode($response->getBody()->getContents(), true);
+        if ($response->getHeaderLine('Content-Type') === 'application/json') {
+            return json_decode($body, true);
+        }
+
+        return $body;
     }
 }

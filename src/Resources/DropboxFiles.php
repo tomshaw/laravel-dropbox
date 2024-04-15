@@ -76,7 +76,7 @@ class DropboxFiles extends DropboxResource
         ], headers: $this->getRequestHeaders());
     }
 
-    public function upload(string $path, array $contents, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
+    public function upload(string $path, $contents, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
     {
         $arguments = [
             'path' => $path,

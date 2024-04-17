@@ -184,7 +184,7 @@ use TomShaw\Dropbox\Dropbox;
 
 class DropboxController extends Controller
 {
-    public function download(string $path)
+    public function upload(string $path)
     {
         $fileName = basename($path);
         $fileResource = fopen($path, 'r');

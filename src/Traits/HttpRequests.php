@@ -81,28 +81,26 @@ trait HttpRequests
             'headers' => $this->headers,
         ];
 
-        if (is_resource($contents)) {
-            $options['body'] = $contents;
-        }
-
-        if (! in_array('Dropbox-API-Arg', array_keys($this->headers))) {
-            $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
-        }
-
         if (count($params)) {
             $options['form_params'] = $params;
         }
 
+        if (is_resource($contents)) {
+            $options['body'] = $contents;
+        } elseif (! in_array('Dropbox-API-Arg', array_keys($this->headers))) {
+            $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
+        }
+
         $response = $this->client->request($method, $endpoint, $options);
 
-        $body = $response->getBody()->getContents();
+        $contents = $response->getBody()->getContents();
 
         $this->headers = [];
 
         if ($response->getHeaderLine('Content-Type') === 'application/json') {
-            return json_decode($body, true);
+            return json_decode($contents, true);
         }
 
-        return $body;
+        return $contents;
     }
 }

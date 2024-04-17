@@ -6,28 +6,49 @@ use TomShaw\Dropbox\Resources\{DropboxAuth, DropboxCheck, DropboxFiles, DropboxS
 
 class DropboxManager
 {
-    public function auth(DropboxClient $client): DropboxAuth
+    public function getAuthUrl(): string
     {
-        return new DropboxAuth($client);
+        return app(DropboxClient::class)->getAuthUrl();
     }
 
-    public function check(DropboxClient $client): DropboxCheck
+    public function revoke(): bool
     {
-        return new DropboxCheck($client);
+        $this->auth()->revokeToken();
+
+        return app(DropboxClient::class)->deleteAccessToken();
     }
 
-    public function users(DropboxClient $client): DropboxUsers
+    public function connect(string $code)
     {
-        return new DropboxUsers($client);
+        $client = app(DropboxClient::class);
+
+        $accessToken = $client->getAccessTokenWithAuthCode($code);
+
+        return $client->setAccessToken($accessToken);
     }
 
-    public function files(DropboxClient $client): DropboxFiles
+    public function auth(): DropboxAuth
     {
-        return new DropboxFiles($client);
+        return new DropboxAuth(app(DropboxClient::class));
     }
 
-    public function sharing(DropboxClient $client): DropboxSharing
+    public function check(): DropboxCheck
     {
-        return new DropboxSharing($client);
+        return new DropboxCheck(app(DropboxClient::class));
+    }
+
+    public function users(): DropboxUsers
+    {
+        return new DropboxUsers(app(DropboxClient::class));
+    }
+
+    public function files(): DropboxFiles
+    {
+        return new DropboxFiles(app(DropboxClient::class));
+    }
+
+    public function sharing(): DropboxSharing
+    {
+        return new DropboxSharing(app(DropboxClient::class));
     }
 }

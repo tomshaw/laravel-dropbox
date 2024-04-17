@@ -68,9 +68,9 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function check(DropboxClient $client)
+    public function check()
     {
-        Dropbox::check($client)->app(['query' => 'foo']);
+        Dropbox::check()->app(['query' => 'foo']);
     }
 }
 ```
@@ -85,18 +85,16 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function authorize(DropboxClient $client)
+    public function connect()
     {
         if (request()->has('code')) {
 
-            $accessToken = $client->getAccessTokenWithAuthCode(request('code'));
-
-            $client->setAccessToken($accessToken);
+            Dropbox::connect(request('code'));
 
             return redirect()->route('dashboard');
         }
 
-        return redirect()->away($client->getAuthUrl());
+        return redirect()->away(Dropbox::getAuthUrl());
     }
 }
 ```
@@ -111,11 +109,9 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function revoke(DropboxClient $client)
+    public function revoke()
     {
-        Dropbox::auth($client)->revokeToken();
-
-        $client->deleteAccessToken();
+        Dropbox::revoke();
 
         return redirect()->route('dashboard');
     }
@@ -132,9 +128,9 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function account(DropboxClient $client)
+    public function account()
     {
-        Dropbox::users($client)->getCurrentAccount();
+        Dropbox::users()->getCurrentAccount();
     }
 }
 ```
@@ -149,9 +145,9 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function revoke(DropboxClient $client)
+    public function createfolder(string $path)
     {
-        Dropbox::files($client)->createFolder($path, true);
+        Dropbox::files()->createFolder($path, true);
     }
 }
 ```
@@ -166,9 +162,9 @@ use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
-    public function revoke(DropboxClient $client)
+    public function sharelink(string $path)
     {
-        Dropbox::sharing($client)->createSharedLinkWithSettings($path, ['requested_visibility' => 'public']);
+        Dropbox::sharing()->createSharedLinkWithSettings($path, ['requested_visibility' => 'public']);
     }
 }
 ```

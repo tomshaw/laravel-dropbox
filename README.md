@@ -81,7 +81,6 @@ class DropboxController extends Controller
 namespace App\Http\Controllers;
 
 use TomShaw\Dropbox\Dropbox;
-use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
@@ -105,7 +104,6 @@ class DropboxController extends Controller
 namespace App\Http\Controllers;
 
 use TomShaw\Dropbox\Dropbox;
-use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
@@ -124,7 +122,6 @@ class DropboxController extends Controller
 namespace App\Http\Controllers;
 
 use TomShaw\Dropbox\Dropbox;
-use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
@@ -141,13 +138,60 @@ class DropboxController extends Controller
 namespace App\Http\Controllers;
 
 use TomShaw\Dropbox\Dropbox;
-use TomShaw\Dropbox\DropboxClient;
 
 class DropboxController extends Controller
 {
     public function createfolder(string $path)
     {
         Dropbox::files()->createFolder($path, true);
+    }
+}
+```
+
+> Downloading a file utilizing the `files` accessor.
+
+```php
+namespace App\Http\Controllers;
+
+use TomShaw\Dropbox\Dropbox;
+
+class DropboxController extends Controller
+{
+    public function download($id)
+    {
+        $item = Dropbox::files()->getMetadata($id);
+
+        if ($item) {
+            $fileContents = Dropbox::files()->download($item['path_lower']);
+
+            return response($fileContents, 200, [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => 'attachment; filename="' . $item['name'] . '"',
+            ]);
+        }
+
+        return abort(404);
+    }
+}
+```
+
+> Uploads files utilizing the `files` accessor.
+
+> Note: Contents must be a valid file resource.
+
+```php
+namespace App\Http\Controllers;
+
+use TomShaw\Dropbox\Dropbox;
+
+class DropboxController extends Controller
+{
+    public function download(string $path)
+    {
+        $fileName = basename($path);
+        $fileResource = fopen($path, 'r');
+
+        Dropbox::files()->upload($path . '/' . $fileName, contents: $fileResource, mode: 'add', autorename: false, mute: false, strictConflict: false);
     }
 }
 ```

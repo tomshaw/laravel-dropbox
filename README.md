@@ -58,7 +58,7 @@ Here's a breakdown of each configuration option:
 
 > Below is a cursory explanation of this repository's usage. Please refer to the appropriate Facade Resource for additional methods and usage.
 
-> Verify your apps credentials utilizing the `check` facade and `app` method.
+> Verify your apps credentials utilizing the `check` accessor `app` method.
 
 ```php
 namespace App\Http\Controllers;
@@ -99,7 +99,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Revoking access tokens utilizing the `auth` facade.
+> Revoking access tokens utilizing the `auth` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -118,7 +118,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Request account information utilizing the `users` facade.
+> Request account information utilizing the `users` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -135,7 +135,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Creating a folder utilizing the `files` facade.
+> Creating a folder utilizing the `files` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -152,7 +152,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Sharing a link utilizing the `sharing` facade.
+> Sharing a link utilizing the `sharing` accessor.
 
 ```php
 namespace App\Http\Controllers;

@@ -98,7 +98,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Revoking access tokens utilizing the `revoke` accessor.
+> Revoking access using the `revoke` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -116,7 +116,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Request account information utilizing the `users` accessor.
+> Requesting account information using the `users` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -132,7 +132,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Creating a folder utilizing the `files` accessor.
+> Creating folders using the `files` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -148,7 +148,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Downloading a file utilizing the `files` accessor.
+> Downloading files using the `files` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -175,9 +175,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Uploads files utilizing the `files` accessor.
-
-> Note: Contents must be a valid file resource.
+> Uploading files using the `files` accessor.
 
 ```php
 namespace App\Http\Controllers;
@@ -196,7 +194,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Sharing a link utilizing the `sharing` accessor.
+> Sharing a link using the `sharing` accessor.
 
 ```php
 namespace App\Http\Controllers;

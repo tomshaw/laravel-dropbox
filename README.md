@@ -98,7 +98,7 @@ class DropboxController extends Controller
 }
 ```
 
-> Revoking access tokens utilizing the `auth` accessor.
+> Revoking access tokens utilizing the `revoke` accessor.
 
 ```php
 namespace App\Http\Controllers;

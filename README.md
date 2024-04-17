@@ -1,6 +1,6 @@
-# Dropbox 📂 
+# Laravel Dropbox 📂 
 
-A Laravel Dropbox API client library.
+A Laravel Dropbox API 2.0 client library.
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tomshaw/laravel-dropbox/run-tests.yml?branch=master&style=flat-square&label=tests)
 ![issues](https://img.shields.io/github/issues/tomshaw/laravel-dropbox?style=flat&logo=appveyor)

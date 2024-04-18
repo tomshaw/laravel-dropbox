@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.0.0...v1.1.0) (2024-04-18)
+
+
+### Features
+
+* **upload:** refactor upload method to accept file paths ([a39999c](https://github.com/tomshaw/laravel-dropbox/commit/a39999c985deb68fb989d6fddbcdaeabfae69f39))
+
 ## [1.0.0](https://github.com/tomshaw/laravel-dropbox/compare/v0.2.3...v1.0.0) (2024-04-18)
 
 

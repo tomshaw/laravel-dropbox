@@ -88,7 +88,7 @@ trait HttpRequests
         if (is_resource($body)) {
             $options['body'] = $body;
         } elseif (! in_array('Dropbox-API-Arg', array_keys($this->headers))) {
-            $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
+            $options['body'] = is_array($body) ? json_encode($body) : json_encode(null);
         }
 
         $response = $this->client->request($method, $endpoint, $options);

@@ -106,10 +106,10 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
-    public function upload(string $path, mixed $contents, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
+    public function upload(string $path, mixed $body, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
     {
-        if (! is_resource($contents)) {
-            throw new \InvalidArgumentException('Contents must be a valid resource');
+        if (! is_resource($body)) {
+            throw new \InvalidArgumentException('Body must be a valid resource');
         }
 
         $this->client->headers(bearer: true, contentType: 'application/octet-stream', arguments: [
@@ -120,7 +120,7 @@ class DropboxFiles extends DropboxResource
             'strict_conflict' => $strictConflict,
         ]);
 
-        return $this->client->post(Endpoints::Content->value.'files/upload', contents: $contents);
+        return $this->client->post(Endpoints::Content->value.'files/upload', body: $body);
     }
 
     public function download(string $path): string

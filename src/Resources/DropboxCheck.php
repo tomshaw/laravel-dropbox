@@ -10,13 +10,13 @@ class DropboxCheck extends DropboxResource
     {
         $this->client->headers(basic: true);
 
-        return $this->client->post(Endpoints::Base->value.'check/app', $body);
+        return $this->client->post(Endpoints::Base->value.'check/app', body: $body);
     }
 
-    public function user($body = []): ?array
+    public function user(array $body = []): ?array
     {
         $this->client->headers(basic: true);
 
-        return $this->client->post(Endpoints::Base->value.'check/user', $body);
+        return $this->client->post(Endpoints::Base->value.'check/user', body: $body);
     }
 }

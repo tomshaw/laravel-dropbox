@@ -189,7 +189,7 @@ class DropboxController extends Controller
         $fileName = basename($path);
         $fileResource = fopen($path, 'r');
 
-        Dropbox::files()->upload($path . '/' . $fileName, contents: $fileResource, mode: 'add', autorename: false, mute: false, strictConflict: false);
+        Dropbox::files()->upload($path . '/' . $fileName, body: $fileResource, mode: 'add', autorename: false, mute: false, strictConflict: false);
     }
 }
 ```

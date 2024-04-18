@@ -55,27 +55,27 @@ trait HttpRequests
         return $this;
     }
 
-    public function post(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
+    public function post(string $endpoint, mixed $body = null, array $params = []): mixed
     {
-        return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+        return $this->sendRequest('POST', endpoint: $endpoint, body: $body, params: $params);
     }
 
-    public function get(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
+    public function get(string $endpoint, mixed $body = null, array $params = []): mixed
     {
-        return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+        return $this->sendRequest('GET', endpoint: $endpoint, body: $body, params: $params);
     }
 
-    public function put(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
+    public function put(string $endpoint, mixed $body = null, array $params = []): mixed
     {
-        return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+        return $this->sendRequest('PUT', endpoint: $endpoint, body: $body, params: $params);
     }
 
-    public function delete(string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
+    public function delete(string $endpoint, mixed $body = null, array $params = []): mixed
     {
-        return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params, contents: $contents);
+        return $this->sendRequest('DELETE', endpoint: $endpoint, body: $body, params: $params);
     }
 
-    public function sendRequest(string $method, string $endpoint, array $body = [], array $params = [], mixed $contents = null): mixed
+    public function sendRequest(string $method, string $endpoint, mixed $body = null, array $params = []): mixed
     {
         $options = [
             'headers' => $this->headers,
@@ -85,8 +85,8 @@ trait HttpRequests
             $options['form_params'] = $params;
         }
 
-        if (is_resource($contents)) {
-            $options['body'] = $contents;
+        if (is_resource($body)) {
+            $options['body'] = $body;
         } elseif (! in_array('Dropbox-API-Arg', array_keys($this->headers))) {
             $options['body'] = count($body) > 0 ? json_encode($body) : json_encode(null);
         }

@@ -106,14 +106,20 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
-    public function upload(string $path, mixed $body, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
+    public function upload(string $destinationPath, string $sourceFilePath, $mode = 'add', bool $autorename = false, bool $mute = false, bool $strictConflict = false): ?array
     {
+        if (! file_exists($sourceFilePath)) {
+            throw new \InvalidArgumentException('Source file does not exist');
+        }
+
+        $body = fopen($sourceFilePath, 'r');
+
         if (! is_resource($body)) {
-            throw new \InvalidArgumentException('Body must be a valid resource');
+            throw new \InvalidArgumentException('Could not open source file for reading');
         }
 
         $this->client->headers(bearer: true, contentType: 'application/octet-stream', arguments: [
-            'path' => $path,
+            'path' => $destinationPath,
             'mode' => $mode,
             'autorename' => $autorename,
             'mute' => $mute,

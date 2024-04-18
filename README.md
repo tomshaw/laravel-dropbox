@@ -226,6 +226,10 @@ The package is compatible with PHP 8 or later.
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
+## Changelog
+
+For changes made to the project, see the [Changelog](CHANGELOG.md).
+
 ## License
 
 The MIT License (MIT). See [License File](LICENSE) for more information.

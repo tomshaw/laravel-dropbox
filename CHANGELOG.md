@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tomshaw/laravel-dropbox/compare/v1.1.0...v1.1.1) (2025-02-02)
+
+
+### Miscellaneous Chores
+
+* **deps:** add support for PHP 8.3 and 8.4 in composer.json ([67aa3a9](https://github.com/tomshaw/laravel-dropbox/commit/67aa3a9de20f29ba34cb019eea3bf25fbcc52340))
+
 ## [1.1.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.0.0...v1.1.0) (2024-04-18)
 
 

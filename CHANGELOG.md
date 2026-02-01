@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.1.2...v1.2.0) (2026-02-01)
+
+
+### Features
+
+* add issue templates for bug reports, documentation issues, feature requests, general issues, improvements, and questions ([a5c41bb](https://github.com/tomshaw/laravel-dropbox/commit/a5c41bb567e554104e0d8d484179ce98df44c955))
+
+
+### Miscellaneous Chores
+
+* update dependencies and improve code structure for compatibility with Laravel 12 ([01d2415](https://github.com/tomshaw/laravel-dropbox/commit/01d24157ab802d71fafffbdaacf28bac7e3975d4))
+* update PHPStan and Pint workflows to use latest action versions and PHP 8.5 ([a5c41bb](https://github.com/tomshaw/laravel-dropbox/commit/a5c41bb567e554104e0d8d484179ce98df44c955))
+* update run-tests workflow to support Laravel 12 and PHP 8.5 ([a5c41bb](https://github.com/tomshaw/laravel-dropbox/commit/a5c41bb567e554104e0d8d484179ce98df44c955))
+
 ## [1.1.2](https://github.com/tomshaw/laravel-dropbox/compare/v1.1.1...v1.1.2) (2025-02-03)
 
 

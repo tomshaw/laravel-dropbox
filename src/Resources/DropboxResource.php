@@ -8,6 +8,5 @@ class DropboxResource
 {
     public function __construct(
         protected DropboxClient $client
-    ) {
-    }
+    ) {}
 }

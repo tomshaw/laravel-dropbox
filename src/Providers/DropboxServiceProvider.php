@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use TomShaw\Dropbox\DropboxClient;
-use TomShaw\Dropbox\Middlewares\{DropboxConnect};
+use TomShaw\Dropbox\Middlewares\DropboxConnect;
 
 class DropboxServiceProvider extends ServiceProvider
 {
@@ -49,6 +49,6 @@ class DropboxServiceProvider extends ServiceProvider
 
     protected function bindDropboxClient()
     {
-        $this->app->singleton(DropboxClient::class, fn () => new DropboxClient(new Client()));
+        $this->app->singleton(DropboxClient::class, fn () => new DropboxClient(new Client));
     }
 }

@@ -22,10 +22,6 @@ class DropboxClient
 
     public function setStorage(StorageAdapterInterface $storageAdapter): self
     {
-        if (! $storageAdapter instanceof StorageAdapterInterface) {
-            throw new \Exception('Invalid token storage.');
-        }
-
         $this->storageAdapter = $storageAdapter;
 
         return $this;

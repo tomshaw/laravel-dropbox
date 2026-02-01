@@ -13,7 +13,7 @@ test('instance check', function () {
 beforeEach(function () {
     Config::set('dropbox', require realpath(__DIR__.DIRECTORY_SEPARATOR.'Mock'.DIRECTORY_SEPARATOR.'config.php'));
 
-    $this->client = new DropboxClient(new Client());
+    $this->client = new DropboxClient(new Client);
 });
 
 it('sets the access token correctly', function () {

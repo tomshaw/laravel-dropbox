@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TomShaw\Dropbox\": "src"
+            "TomShaw\\Dropbox\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TomShaw\Dropbox\Tests\": "tests"
+            "TomShaw\\Dropbox\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -53,7 +53,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "TomShaw\Dropbox\Providers\DropboxServiceProvider"
+                "TomShaw\\Dropbox\\Providers\\DropboxServiceProvider"
             ]
         }
     },

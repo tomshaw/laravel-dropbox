@@ -15,7 +15,7 @@ class DropboxClient
     protected StorageAdapterInterface $storageAdapter;
 
     public function __construct(
-        protected client $client,
+        protected Client $client,
     ) {
         $this->setStorage(app(config('dropbox.storage')));
     }

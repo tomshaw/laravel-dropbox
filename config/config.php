@@ -1,5 +1,7 @@
 <?php
 
+use TomShaw\Dropbox\Storage\DatabaseTokenStorage;
+
 /**
  * Configuration options for Dropbox.
  *
@@ -11,7 +13,7 @@ return [
      *
      * @var string
      */
-    'storage' => TomShaw\Dropbox\Storage\DatabaseTokenStorage::class,
+    'storage' => DatabaseTokenStorage::class,
 
     /**
      * The client ID for the Dropbox application.

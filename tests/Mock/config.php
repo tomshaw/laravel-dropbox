@@ -1,7 +1,9 @@
 <?php
 
+use TomShaw\Dropbox\Storage\SessionTokenStorage;
+
 return [
-    'storage' => TomShaw\Dropbox\Storage\SessionTokenStorage::class,
+    'storage' => SessionTokenStorage::class,
     'clientId' => 'test',
     'clientSecret' => 'test',
     'redirectUri' => 'test',

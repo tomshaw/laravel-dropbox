@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.3.0...v1.4.0) (2026-04-04)
+
+
+### Features
+
+* apply pint code style fixes and update linting workflow ([73dad98](https://github.com/tomshaw/laravel-dropbox/commit/73dad98ed45c1d918ea79269c02cfdd0cbd5d154))
+* fix pint workflow to use project config and revert incorrect style changes ([b080c5a](https://github.com/tomshaw/laravel-dropbox/commit/b080c5a310b1511b8d231d23f387c4aa709dd714))
+* use project pint version in CI instead of external action ([14c46b9](https://github.com/tomshaw/laravel-dropbox/commit/14c46b9535f7b96138d1d6f8b19bededdccbf028))
+
 ## [1.3.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.2.0...v1.3.0) (2026-04-04)
 
 

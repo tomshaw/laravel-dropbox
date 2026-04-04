@@ -14,24 +14,12 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php: [ 8.5 ]
-<<<<<<< HEAD
         laravel: [ 13.* ]
         dependency-version: [ prefer-stable ]
         include:
           - laravel: 13.*
             testbench: 11.*
             larastan: ^3.0
-=======
-        laravel: [ 12.*, 13.* ]
-        dependency-version: [ prefer-stable ]
-        include:
-          - laravel: 12.*
-            testbench: 10.*
-            larastan: ^3.1
-          - laravel: 13.*
-            testbench: 11.*
-            larastan: ^3.1
->>>>>>> a554f58 (chore: update workflows and dependencies for compatibility with Laravel 13)
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 

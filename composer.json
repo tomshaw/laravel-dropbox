@@ -21,11 +21,11 @@
         "guzzlehttp/guzzle": "^7"
     },
     "require-dev": {
-        "larastan/larastan": "^3.1",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.21",
         "nunomaduro/collision": "^8.0",
         "orchestra/testbench": "^11.0",
-        "pestphp/pest": "^3.0"
+        "pestphp/pest": "^3.0|^4.0"
     },
     "autoload": {
         "psr-4": {

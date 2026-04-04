@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
   pull_request:
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -13,12 +14,12 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php: [ 8.5 ]
-        laravel: [ 12.* ]
+        laravel: [ 13.* ]
         dependency-version: [ prefer-stable ]
         include:
-          - laravel: 12.*
-            testbench: 10.*
-            larastan: ^3.1
+          - laravel: 13.*
+            testbench: 11.*
+            larastan: ^3.0
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 

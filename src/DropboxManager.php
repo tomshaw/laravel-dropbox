@@ -2,7 +2,11 @@
 
 namespace TomShaw\Dropbox;
 
-use TomShaw\Dropbox\Resources\{DropboxAuth, DropboxCheck, DropboxFiles, DropboxSharing, DropboxUsers};
+use TomShaw\Dropbox\Resources\DropboxAuth;
+use TomShaw\Dropbox\Resources\DropboxCheck;
+use TomShaw\Dropbox\Resources\DropboxFiles;
+use TomShaw\Dropbox\Resources\DropboxSharing;
+use TomShaw\Dropbox\Resources\DropboxUsers;
 
 class DropboxManager
 {

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.2.0...v1.3.0) (2026-04-04)
+
+
+### Features
+
+* standardize CI workflows and update dependencies for Laravel 13 ([7ed1b9a](https://github.com/tomshaw/laravel-dropbox/commit/7ed1b9ad556a34a63a054e38afdb6b4a3fe2907c))
+
+
+### Bug Fixes
+
+* restore double backslashes in namespace paths (corrupted JSON) ([a7cd539](https://github.com/tomshaw/laravel-dropbox/commit/a7cd5395f7337e0acc0800196b5ba6feeaf0c595))
+
+
+### Miscellaneous Chores
+
+* update workflows and dependencies for compatibility with Laravel 13 ([e18f3ef](https://github.com/tomshaw/laravel-dropbox/commit/e18f3ef0d4ecdfd55f18c760074a4b2477c9c0c2))
+
 ## [1.2.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.1.2...v1.2.0) (2026-02-01)
 
 

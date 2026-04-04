@@ -3,11 +3,12 @@
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\TestCase;
 use TomShaw\Dropbox\DropboxClient;
 use TomShaw\Dropbox\Storage\StorageAdapterInterface;
 
 test('instance check', function () {
-    $this->assertTrue($this instanceof \PHPUnit\Framework\TestCase);
+    $this->assertTrue($this instanceof TestCase);
 });
 
 beforeEach(function () {
@@ -43,7 +44,7 @@ it('gets the access token correctly', function () {
 });
 
 it('sets and gets the storage adapter correctly', function () {
-    $mockStorageAdapter = \Mockery::mock(StorageAdapterInterface::class);
+    $mockStorageAdapter = Mockery::mock(StorageAdapterInterface::class);
 
     $this->client->setStorage($mockStorageAdapter);
 

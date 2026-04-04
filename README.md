@@ -8,6 +8,11 @@ A Laravel Dropbox API 2.0 client library.
 ![stars](https://img.shields.io/github/stars/tomshaw/laravel-dropbox?style=flat&logo=appveyor)
 [![GitHub license](https://img.shields.io/github/license/tomshaw/laravel-dropbox)](https://github.com/tomshaw/laravel-dropbox/blob/master/LICENSE)
 
+## Requirements
+
+- PHP ^8.2
+- Laravel ^12.0 | ^13.0
+
 ## Features
 
 - **Customizable Token Storage**: User definable token storage adapters to suit your apps needs providing flexibility in how and where you store your tokens.

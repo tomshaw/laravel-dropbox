@@ -17,4 +17,8 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+<<<<<<< HEAD
           release-type: php
+=======
+          release-type: php
+>>>>>>> a554f58 (chore: update workflows and dependencies for compatibility with Laravel 13)

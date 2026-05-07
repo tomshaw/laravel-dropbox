@@ -10,8 +10,8 @@ A Laravel Dropbox API 2.0 client library.
 
 ## Requirements
 
-- PHP ^8.2
-- Laravel ^12.0 | ^13.0
+- PHP 8.5
+- Laravel 13.0
 
 ## Features
 

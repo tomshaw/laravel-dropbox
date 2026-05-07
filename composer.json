@@ -10,7 +10,7 @@
     "authors": [
         {
             "name": "Tom Shaw",
-            "email": "tomshaw@tomshaw.us",
+            "email": "tomshaw@users.noreply.github.com",
             "role": "Developer"
         }
     ],
@@ -18,14 +18,14 @@
         "php": "^8.5",
         "illuminate/support": "^13.0",
         "laravel/framework": "^13.0",
-        "guzzlehttp/guzzle": "^7"
+        "guzzlehttp/guzzle": "^7.10"
     },
     "require-dev": {
-        "larastan/larastan": "^3.0",
-        "laravel/pint": "^1.21",
-        "nunomaduro/collision": "^8.0",
-        "orchestra/testbench": "^11.0",
-        "pestphp/pest": "^3.0|^4.0"
+        "larastan/larastan": "^3.9",
+        "laravel/pint": "^1.29",
+        "nunomaduro/collision": "^8.9",
+        "orchestra/testbench": "^11.1",
+        "pestphp/pest": "^4.7"
     },
     "autoload": {
         "psr-4": {

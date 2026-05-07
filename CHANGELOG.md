@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.4.0...v1.5.0) (2026-05-07)
+
+
+### Features
+
+* 🚀 upgrade to Laravel 13 and PHP 8.5 ([3f361e8](https://github.com/tomshaw/laravel-dropbox/commit/3f361e8b0d85b370260a0c2c1fcf46d908e747ef))
+
 ## [1.4.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.3.0...v1.4.0) (2026-04-04)
 
 

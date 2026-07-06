@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
-use Mockery;
 use TomShaw\Dropbox\DropboxClient;
 use TomShaw\Dropbox\Storage\StorageAdapterInterface;
 use TomShaw\Dropbox\Support\AccessToken;
@@ -70,3 +69,15 @@ it('sets and gets the storage adapter correctly', function () {
 
     expect($this->client->getStorage())->toBe($mockStorageAdapter);
 });
+
+it('throws when the configured storage is not a storage adapter', function () {
+    Config::set('dropbox.storage', stdClass::class);
+
+    new DropboxClient;
+})->throws(InvalidArgumentException::class);
+
+it('throws when the configured storage is not a class name', function () {
+    Config::set('dropbox.storage', null);
+
+    new DropboxClient;
+})->throws(InvalidArgumentException::class);

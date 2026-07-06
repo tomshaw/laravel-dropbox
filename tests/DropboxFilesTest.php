@@ -136,6 +136,10 @@ it('throws when uploading a missing file', function () {
     Dropbox::files()->upload('/missing.txt', '/nonexistent/missing.txt');
 })->throws(InvalidArgumentException::class);
 
+it('rejects an upload session chunk size below one byte', function () {
+    Dropbox::files()->uploadSession('/big.bin', __FILE__, chunkSize: 0);
+})->throws(InvalidArgumentException::class);
+
 it('uploads large files through chunked upload sessions', function () {
     Http::fake([
         'content.dropboxapi.com/2/upload_session/start' => Http::response(['session_id' => 'session-1']),

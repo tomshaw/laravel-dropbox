@@ -66,6 +66,8 @@ Here's a breakdown of each configuration option:
 
 - `DROPBOX_RETRIES`: Number of attempts for rate-limited requests or failed connections (default `3`).
 
+Token storage is configured via the `storage` key in the published `config/dropbox.php`. The default is `DatabaseTokenStorage` (encrypted, requires the migration); `SessionTokenStorage` is included for session-scoped tokens, or provide your own implementation of `TomShaw\Dropbox\Storage\StorageAdapterInterface`.
+
 > Developers should review the [Dropbox Developer Platform](https://www.dropbox.com/developers) and [SDK Documentation](https://www.dropbox.com/developers/documentation) for further information. 
 
 ## Basic Usage
@@ -254,18 +256,6 @@ Route::group(['middleware' => ['web', 'auth', 'dropbox']], function () {
   /* Grouped routes */
 });
 ```
-
-## Upgrading from 1.x
-
-Version 2.0 is a major release with breaking changes:
-
-- The OAuth callback should now pass the `state` parameter: `Dropbox::connect(request('code'), request('state'))`.
-- `DropboxClient::getAccessToken()` returns a `TomShaw\Dropbox\Support\AccessToken` value object (or `null`) instead of a collection.
-- `Dropbox::files()->upload()` takes a `WriteMode` enum instead of a string mode.
-- `Dropbox::check()->app()` and `->user()` take an optional string query instead of an array body.
-- `listContentsContinue()` was renamed to `listFolderContinue()`.
-- Failed requests throw `TomShaw\Dropbox\Exceptions\DropboxException` (or a subclass) instead of Guzzle exceptions.
-- Database tokens are now encrypted and the `dropbox_tokens` table schema changed. Run `php artisan migrate` — the included upgrade migration converts the table and removes existing v1 rows, so users will need to re-authenticate with Dropbox once.
 
 ## Contributing
 

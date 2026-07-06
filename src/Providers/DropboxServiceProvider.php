@@ -2,33 +2,33 @@
 
 namespace TomShaw\Dropbox\Providers;
 
-use GuzzleHttp\Client;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use TomShaw\Dropbox\DropboxClient;
+use TomShaw\Dropbox\{DropboxClient, DropboxManager};
 use TomShaw\Dropbox\Middlewares\DropboxConnect;
 
 class DropboxServiceProvider extends ServiceProvider
 {
-    public function boot(Router $router)
+    public function boot(Router $router): void
     {
         $this->loadMigrations();
         $this->publishConfig();
         $this->registerMiddleware($router);
     }
 
-    public function register()
+    public function register(): void
     {
         $this->mergeConfig();
-        $this->bindDropboxClient();
+        $this->bindServices();
     }
 
-    protected function loadMigrations()
+    protected function loadMigrations(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
     }
 
-    protected function publishConfig()
+    protected function publishConfig(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -37,18 +37,20 @@ class DropboxServiceProvider extends ServiceProvider
         }
     }
 
-    protected function registerMiddleware(Router $router)
+    protected function registerMiddleware(Router $router): void
     {
         $router->aliasMiddleware('dropbox', DropboxConnect::class);
     }
 
-    protected function mergeConfig()
+    protected function mergeConfig(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../../config/config.php', 'dropbox');
     }
 
-    protected function bindDropboxClient()
+    protected function bindServices(): void
     {
-        $this->app->singleton(DropboxClient::class, fn () => new DropboxClient(new Client));
+        $this->app->singleton(DropboxClient::class, fn (Application $app): DropboxClient => new DropboxClient($app->make(config('dropbox.storage'))));
+
+        $this->app->singleton(DropboxManager::class);
     }
 }

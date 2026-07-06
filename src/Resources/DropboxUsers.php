@@ -2,14 +2,15 @@
 
 namespace TomShaw\Dropbox\Resources;
 
-use TomShaw\Dropbox\Enums\Endpoints;
-
 class DropboxUsers extends DropboxResource
 {
     public function getCurrentAccount(): ?array
     {
-        $this->client->headers(bearer: true);
+        return $this->client->rpc('users/get_current_account');
+    }
 
-        return $this->client->post(Endpoints::Base->value.'users/get_current_account');
+    public function getSpaceUsage(): ?array
+    {
+        return $this->client->rpc('users/get_space_usage');
     }
 }

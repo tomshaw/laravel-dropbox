@@ -37,7 +37,9 @@ return [
     'redirectUri' => env('DROPBOX_REDIRECT_URI'),
 
     /**
-     * The access token for Dropbox API requests.
+     * A static access token used for all API requests. When set, the OAuth
+     * flow and token storage are bypassed entirely. Useful for single-account
+     * server-side integrations using a scoped app token.
      *
      * @var string|null
      */
@@ -56,4 +58,18 @@ return [
      * @var string|null
      */
     'scopes' => env('DROPBOX_ACCESS_SCOPES'),
+
+    /**
+     * The request timeout in seconds for Dropbox API calls.
+     *
+     * @var int
+     */
+    'timeout' => env('DROPBOX_TIMEOUT', 30),
+
+    /**
+     * The number of attempts for rate-limited or failed connections.
+     *
+     * @var int
+     */
+    'retries' => env('DROPBOX_RETRIES', 3),
 ];

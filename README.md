@@ -15,8 +15,13 @@ A Laravel Dropbox API 2.0 client library.
 
 ## Features
 
-- **Customizable Token Storage**: User definable token storage adapters to suit your apps needs providing flexibility in how and where you store your tokens.
-- **Token Refresh Middleware**: Automatically handles token refreshing, ensuring your application maintains a valid API connection without manual intervention.
+- **Secure OAuth 2.0 Flow**: Authorization with CSRF `state` verification and PKCE (S256) code challenges out of the box.
+- **Automatic Token Refresh**: Expiring tokens are refreshed transparently before every authenticated request — in controllers, queued jobs, and Artisan commands alike.
+- **Customizable Token Storage**: User definable token storage adapters to suit your apps needs. Database-stored tokens are encrypted at rest.
+- **Static Token Mode**: Set `DROPBOX_ACCESS_TOKEN` to skip the OAuth flow entirely for single-account, server-side integrations.
+- **Large File Support**: Uploads above Dropbox's 150 MB single-request limit automatically switch to chunked upload sessions; downloads can stream straight to disk.
+- **Resilient HTTP Layer**: Built on Laravel's HTTP client with configurable timeouts and automatic retries that honor Dropbox `Retry-After` rate-limit headers.
+- **Typed Exceptions**: `DropboxException`, `AuthenticationException`, and `RateLimitException` expose the status code and parsed `error_summary` from Dropbox.
 - **Laravel Facades Integration**: Built using Laravel Facades offering a familiar and simple interface that promotes readability, flexibility, testing and ease of use.
 
 ## Installation
@@ -51,11 +56,15 @@ Here's a breakdown of each configuration option:
 
 - `DROPBOX_REDIRECT_URI`: The URI to redirect to after Dropbox authentication.
 
-- `DROPBOX_ACCESS_TOKEN`: This is the access token for Dropbox API requests.
+- `DROPBOX_ACCESS_TOKEN`: A static access token used for all API requests. When set, the OAuth flow and token storage are bypassed entirely.
 
 - `DROPBOX_ACCESS_TYPE`: This is the access type for the Dropbox application.
 
 - `DROPBOX_ACCESS_SCOPES`: If omitted will request all scopes selected on the Permissions tab.
+
+- `DROPBOX_TIMEOUT`: Request timeout in seconds (default `30`).
+
+- `DROPBOX_RETRIES`: Number of attempts for rate-limited requests or failed connections (default `3`).
 
 > Developers should review the [Dropbox Developer Platform](https://www.dropbox.com/developers) and [SDK Documentation](https://www.dropbox.com/developers/documentation) for further information. 
 
@@ -75,7 +84,7 @@ class DropboxController extends Controller
 {
     public function check()
     {
-        Dropbox::check()->app(['query' => 'foo']);
+        Dropbox::check()->app();
     }
 }
 ```
@@ -93,7 +102,7 @@ class DropboxController extends Controller
     {
         if (request()->has('code')) {
 
-            Dropbox::connect(request('code'));
+            Dropbox::connect(request('code'), request('state'));
 
             return redirect()->route('dashboard');
         }
@@ -180,19 +189,42 @@ class DropboxController extends Controller
 }
 ```
 
-> Uploading files using the `files` accessor.
+> Large downloads can stream directly to a local path without buffering in memory. The file metadata is returned from the `Dropbox-API-Result` header.
+
+```php
+$metadata = Dropbox::files()->downloadTo('/videos/demo.mp4', storage_path('app/demo.mp4'));
+```
+
+> Uploading files using the `files` accessor. Files above Dropbox's 150 MB single-request limit are automatically sent through a chunked upload session; use `uploadSession()` to force chunked uploads at any size.
 
 ```php
 namespace App\Http\Controllers;
 
 use TomShaw\Dropbox\Dropbox;
+use TomShaw\Dropbox\Enums\WriteMode;
 
 class DropboxController extends Controller
 {
-    public function upload(string $path)
+    public function upload(string $destinationPath, string $sourceFilePath)
     {
-        Dropbox::files($client)->upload($destinationPath, $sourceFilePath, mode: 'add', autorename: false, mute: false, strictConflict: false);
+        Dropbox::files()->upload($destinationPath, $sourceFilePath, mode: WriteMode::Add, autorename: false, mute: false, strictConflict: false);
     }
+}
+```
+
+> Handling Dropbox API errors with typed exceptions.
+
+```php
+use TomShaw\Dropbox\Exceptions\{AuthenticationException, DropboxException, RateLimitException};
+
+try {
+    Dropbox::files()->getMetadata('/missing.txt');
+} catch (RateLimitException $e) {
+    // $e->retryAfter (seconds), after built-in retries were exhausted
+} catch (AuthenticationException $e) {
+    // Token invalid, revoked, or the OAuth flow has not completed
+} catch (DropboxException $e) {
+    // $e->status and $e->errorBody['error_summary']
 }
 ```
 
@@ -215,7 +247,7 @@ class DropboxController extends Controller
 
 ## Middleware
 
-Add the included Dropbox `middleware` to any routes that require API access.
+Add the included Dropbox `middleware` to any routes that require API access. Requests without a stored token are redirected to the Dropbox authorization page; requests expecting JSON receive a `401` response instead.
 
 ```php
 Route::group(['middleware' => ['web', 'auth', 'dropbox']], function () {
@@ -223,9 +255,17 @@ Route::group(['middleware' => ['web', 'auth', 'dropbox']], function () {
 });
 ```
 
-## Requirements
+## Upgrading from 1.x
 
-The package is compatible with PHP 8 or later.
+Version 2.0 is a major release with breaking changes:
+
+- The OAuth callback should now pass the `state` parameter: `Dropbox::connect(request('code'), request('state'))`.
+- `DropboxClient::getAccessToken()` returns a `TomShaw\Dropbox\Support\AccessToken` value object (or `null`) instead of a collection.
+- `Dropbox::files()->upload()` takes a `WriteMode` enum instead of a string mode.
+- `Dropbox::check()->app()` and `->user()` take an optional string query instead of an array body.
+- `listContentsContinue()` was renamed to `listFolderContinue()`.
+- Failed requests throw `TomShaw\Dropbox\Exceptions\DropboxException` (or a subclass) instead of Guzzle exceptions.
+- Database tokens are now encrypted and the `dropbox_tokens` table schema changed. Run `php artisan migrate` — the included upgrade migration converts the table and removes existing v1 rows, so users will need to re-authenticate with Dropbox once.
 
 ## Contributing
 

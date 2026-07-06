@@ -2,24 +2,39 @@
 
 namespace TomShaw\Dropbox\Storage;
 
+use TomShaw\Dropbox\Exceptions\DropboxException;
 use TomShaw\Dropbox\Models\DropboxToken;
 
 class DatabaseTokenStorage implements StorageAdapterInterface
 {
-    public function set(array $accessToken): self
+    public function set(array $accessToken): void
     {
-        DropboxToken::updateOrCreate(['user_id' => auth()->id()], array_merge(['user_id' => auth()->id()], $accessToken));
+        $userId = auth()->id() ?? throw new DropboxException('Cannot store a Dropbox token without an authenticated user.');
 
-        return $this;
+        DropboxToken::query()->updateOrCreate(['user_id' => $userId], $accessToken);
     }
 
-    public function get(): ?DropboxToken
+    public function get(): ?array
     {
-        return DropboxToken::where('user_id', auth()->id())->first();
+        $userId = auth()->id();
+
+        if ($userId === null) {
+            return null;
+        }
+
+        return DropboxToken::query()->where('user_id', $userId)->first()?->only([
+            'access_token',
+            'refresh_token',
+            'expires_at',
+            'token_type',
+            'uid',
+            'account_id',
+            'scope',
+        ]);
     }
 
-    public function delete(): int
+    public function delete(): bool
     {
-        return DropboxToken::where('user_id', auth()->id())->delete();
+        return DropboxToken::query()->where('user_id', auth()->id())->delete() > 0;
     }
 }

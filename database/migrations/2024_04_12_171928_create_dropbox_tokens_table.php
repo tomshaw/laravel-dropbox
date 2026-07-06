@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('dropbox_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
             $table->text('access_token');
             $table->text('refresh_token')->nullable();
-            $table->integer('expires_in');
+            $table->timestamp('expires_at')->nullable();
             $table->string('token_type')->nullable();
             $table->string('uid')->nullable();
             $table->string('account_id')->nullable();
             $table->text('scope')->nullable();
+            $table->timestamps();
         });
     }
 

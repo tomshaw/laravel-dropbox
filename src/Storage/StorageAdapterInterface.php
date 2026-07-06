@@ -2,13 +2,17 @@
 
 namespace TomShaw\Dropbox\Storage;
 
-// use TomShaw\Dropbox\Models\DropboxToken;
-
 interface StorageAdapterInterface
 {
-    public function set(array $accessToken): self;
+    /**
+     * @param  array<string, mixed>  $accessToken
+     */
+    public function set(array $accessToken): void;
 
-    public function get(): mixed;
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function get(): ?array;
 
-    public function delete(): mixed;
+    public function delete(): bool;
 }

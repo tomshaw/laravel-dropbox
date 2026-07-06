@@ -2,21 +2,25 @@
 
 namespace TomShaw\Dropbox\Resources;
 
-use TomShaw\Dropbox\Enums\Endpoints;
-
 class DropboxCheck extends DropboxResource
 {
-    public function app(array $body = []): ?array
+    /**
+     * Verify the app key and secret using app (basic) authentication.
+     */
+    public function app(string $query = 'ping'): ?array
     {
-        $this->client->headers(basic: true);
-
-        return $this->client->post(Endpoints::Base->value.'check/app', body: $body);
+        return $this->client->appCheck('check/app', [
+            'query' => $query,
+        ]);
     }
 
-    public function user(array $body = []): ?array
+    /**
+     * Verify the stored user access token.
+     */
+    public function user(string $query = 'ping'): ?array
     {
-        $this->client->headers(basic: true);
-
-        return $this->client->post(Endpoints::Base->value.'check/user', body: $body);
+        return $this->client->rpc('check/user', [
+            'query' => $query,
+        ]);
     }
 }

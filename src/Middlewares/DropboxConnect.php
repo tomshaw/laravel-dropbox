@@ -2,24 +2,26 @@
 
 namespace TomShaw\Dropbox\Middlewares;
 
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use TomShaw\Dropbox\DropboxClient;
 
 class DropboxConnect
 {
-    protected $client;
+    public function __construct(
+        protected readonly DropboxClient $client
+    ) {}
 
-    public function __construct(DropboxClient $client)
-    {
-        $this->client = $client;
-    }
-
-    public function handle($request, \Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         if ($this->client->isEmpty()) {
+            if ($request->expectsJson()) {
+                abort(401, 'Dropbox authentication required.');
+            }
+
             return redirect()->away($this->client->getAuthUrl());
         }
-
-        $this->client->refreshAccessToken();
 
         return $next($request);
     }

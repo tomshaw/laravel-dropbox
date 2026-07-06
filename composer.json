@@ -16,9 +16,7 @@
     ],
     "require": {
         "php": "^8.5",
-        "illuminate/support": "^13.0",
-        "laravel/framework": "^13.0",
-        "guzzlehttp/guzzle": "^7.10"
+        "laravel/framework": "^13.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.9",

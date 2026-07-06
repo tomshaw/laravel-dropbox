@@ -6,11 +6,9 @@ class SessionTokenStorage implements StorageAdapterInterface
 {
     public const SESSION_KEY = 'dropbox_token';
 
-    public function set(array $accessToken): self
+    public function set(array $accessToken): void
     {
         session([self::SESSION_KEY => $accessToken]);
-
-        return $this;
     }
 
     public function get(): ?array
@@ -18,7 +16,7 @@ class SessionTokenStorage implements StorageAdapterInterface
         return session()->get(self::SESSION_KEY);
     }
 
-    public function delete(): true
+    public function delete(): bool
     {
         session()->forget(self::SESSION_KEY);
 

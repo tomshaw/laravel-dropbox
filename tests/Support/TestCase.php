@@ -21,4 +21,10 @@ class TestCase extends Orchestra
             DropboxServiceProvider::class,
         ];
     }
+
+    protected function defineEnvironment($app)
+    {
+        $app['config']->set('session.driver', 'array');
+        $app['config']->set('database.default', 'testing');
+    }
 }

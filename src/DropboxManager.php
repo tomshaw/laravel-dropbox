@@ -6,49 +6,56 @@ use TomShaw\Dropbox\Resources\{DropboxAuth, DropboxCheck, DropboxFiles, DropboxS
 
 class DropboxManager
 {
+    public function __construct(
+        protected readonly DropboxClient $client
+    ) {}
+
+    public function client(): DropboxClient
+    {
+        return $this->client;
+    }
+
     public function getAuthUrl(): string
     {
-        return app(DropboxClient::class)->getAuthUrl();
+        return $this->client->getAuthUrl();
+    }
+
+    public function connect(string $code, ?string $state = null): DropboxClient
+    {
+        return $this->client->setAccessToken(
+            $this->client->getAccessTokenWithAuthCode($code, $state)
+        );
     }
 
     public function revoke(): bool
     {
         $this->auth()->revokeToken();
 
-        return app(DropboxClient::class)->deleteAccessToken();
-    }
-
-    public function connect(string $code)
-    {
-        $client = app(DropboxClient::class);
-
-        $accessToken = $client->getAccessTokenWithAuthCode($code);
-
-        return $client->setAccessToken($accessToken);
+        return $this->client->deleteAccessToken();
     }
 
     public function auth(): DropboxAuth
     {
-        return new DropboxAuth(app(DropboxClient::class));
+        return new DropboxAuth($this->client);
     }
 
     public function check(): DropboxCheck
     {
-        return new DropboxCheck(app(DropboxClient::class));
+        return new DropboxCheck($this->client);
     }
 
     public function users(): DropboxUsers
     {
-        return new DropboxUsers(app(DropboxClient::class));
+        return new DropboxUsers($this->client);
     }
 
     public function files(): DropboxFiles
     {
-        return new DropboxFiles(app(DropboxClient::class));
+        return new DropboxFiles($this->client);
     }
 
     public function sharing(): DropboxSharing
     {
-        return new DropboxSharing(app(DropboxClient::class));
+        return new DropboxSharing($this->client);
     }
 }

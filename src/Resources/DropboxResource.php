@@ -4,9 +4,9 @@ namespace TomShaw\Dropbox\Resources;
 
 use TomShaw\Dropbox\DropboxClient;
 
-class DropboxResource
+abstract class DropboxResource
 {
     public function __construct(
-        protected DropboxClient $client
+        protected readonly DropboxClient $client
     ) {}
 }

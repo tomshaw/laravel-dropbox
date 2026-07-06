@@ -4,6 +4,7 @@ namespace TomShaw\Dropbox\Support;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Arrayable;
+use InvalidArgumentException;
 
 /**
  * @implements Arrayable<string, mixed>
@@ -32,21 +33,38 @@ final class AccessToken implements Arrayable
      */
     public static function fromArray(array $data): self
     {
+        $accessToken = $data['access_token'] ?? null;
+
+        if (! is_string($accessToken) || $accessToken === '') {
+            throw new InvalidArgumentException('The token payload must contain a non-empty "access_token" string.');
+        }
+
+        $expiresIn = $data['expires_in'] ?? null;
+
         $expiresAt = match (true) {
             isset($data['expires_at']) => CarbonImmutable::make($data['expires_at']),
-            isset($data['expires_in']) => CarbonImmutable::now()->addSeconds((int) $data['expires_in']),
+            is_numeric($expiresIn) => CarbonImmutable::now()->addSeconds((int) $expiresIn),
             default => null,
         };
 
         return new self(
-            accessToken: $data['access_token'],
-            refreshToken: $data['refresh_token'] ?? null,
+            accessToken: $accessToken,
+            refreshToken: self::optionalString($data['refresh_token'] ?? null),
             expiresAt: $expiresAt,
-            tokenType: $data['token_type'] ?? null,
-            uid: isset($data['uid']) ? (string) $data['uid'] : null,
-            accountId: $data['account_id'] ?? null,
-            scope: $data['scope'] ?? null,
+            tokenType: self::optionalString($data['token_type'] ?? null),
+            uid: self::optionalString($data['uid'] ?? null),
+            accountId: self::optionalString($data['account_id'] ?? null),
+            scope: self::optionalString($data['scope'] ?? null),
         );
+    }
+
+    private static function optionalString(mixed $value): ?string
+    {
+        return match (true) {
+            is_string($value) => $value,
+            is_int($value), is_float($value) => (string) $value,
+            default => null,
+        };
     }
 
     public function withRefreshed(string $accessToken, ?CarbonImmutable $expiresAt): self

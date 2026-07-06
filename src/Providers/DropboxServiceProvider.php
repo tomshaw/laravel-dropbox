@@ -2,7 +2,6 @@
 
 namespace TomShaw\Dropbox\Providers;
 
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use TomShaw\Dropbox\{DropboxClient, DropboxManager};
@@ -49,7 +48,7 @@ class DropboxServiceProvider extends ServiceProvider
 
     protected function bindServices(): void
     {
-        $this->app->singleton(DropboxClient::class, fn (Application $app): DropboxClient => new DropboxClient($app->make(config('dropbox.storage'))));
+        $this->app->singleton(DropboxClient::class, fn (): DropboxClient => new DropboxClient);
 
         $this->app->singleton(DropboxManager::class);
     }

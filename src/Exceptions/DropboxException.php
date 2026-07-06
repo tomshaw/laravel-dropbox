@@ -4,6 +4,7 @@ namespace TomShaw\Dropbox\Exceptions;
 
 use Exception;
 use Illuminate\Http\Client\Response;
+use TomShaw\Dropbox\Support\Arr;
 
 class DropboxException extends Exception
 {
@@ -21,17 +22,17 @@ class DropboxException extends Exception
     public static function fromResponse(Response $response): static
     {
         $body = str_contains($response->header('Content-Type'), 'application/json')
-            ? $response->json()
+            ? Arr::stringKeyed($response->json())
             : null;
 
-        $summary = is_array($body) && isset($body['error_summary'])
+        $summary = isset($body['error_summary']) && is_string($body['error_summary'])
             ? $body['error_summary']
             : $response->reason();
 
         return new static(
             message: "Dropbox API error ({$response->status()}): {$summary}",
             status: $response->status(),
-            errorBody: is_array($body) ? $body : null,
+            errorBody: $body,
         );
     }
 }

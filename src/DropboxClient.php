@@ -3,14 +3,16 @@
 namespace TomShaw\Dropbox;
 
 use Carbon\CarbonImmutable;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Http\Client\{ConnectionException, PendingRequest, RequestException, Response};
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Throwable;
 use TomShaw\Dropbox\Enums\Endpoints;
 use TomShaw\Dropbox\Exceptions\{AuthenticationException, DropboxException, RateLimitException};
 use TomShaw\Dropbox\Storage\StorageAdapterInterface;
-use TomShaw\Dropbox\Support\AccessToken;
+use TomShaw\Dropbox\Support\{AccessToken, Arr};
 
 class DropboxClient
 {
@@ -22,7 +24,7 @@ class DropboxClient
 
     public function __construct(?StorageAdapterInterface $storageAdapter = null)
     {
-        $this->storageAdapter = $storageAdapter ?? app(config('dropbox.storage'));
+        $this->storageAdapter = $storageAdapter ?? $this->resolveConfiguredStorage();
     }
 
     public function setStorage(StorageAdapterInterface $storageAdapter): self
@@ -102,7 +104,7 @@ class DropboxClient
             'state' => $state,
             'code_challenge' => $codeChallenge,
             'code_challenge_method' => 'S256',
-        ], fn (?string $value): bool => filled($value));
+        ], fn (mixed $value): bool => filled($value));
 
         return Endpoints::Authorize->url().'?'.http_build_query($query);
     }
@@ -111,7 +113,7 @@ class DropboxClient
     {
         $expectedState = session()->pull(self::STATE_SESSION_KEY);
 
-        if ($expectedState !== null && ! hash_equals($expectedState, (string) $state)) {
+        if ($expectedState !== null && (! is_string($expectedState) || ! hash_equals($expectedState, (string) $state))) {
             throw new AuthenticationException('Invalid OAuth state parameter.');
         }
 
@@ -122,7 +124,7 @@ class DropboxClient
             'client_secret' => config('dropbox.clientSecret'),
             'redirect_uri' => config('dropbox.redirectUri'),
             'code_verifier' => session()->pull(self::CODE_VERIFIER_SESSION_KEY),
-        ], fn (?string $value): bool => filled($value)));
+        ], fn (mixed $value): bool => filled($value)));
 
         $data = $this->decode($response);
 
@@ -150,13 +152,17 @@ class DropboxClient
 
         $data = $this->decode($response);
 
-        if (! isset($data['access_token'])) {
+        $accessToken = $data['access_token'] ?? null;
+
+        if (! is_string($accessToken) || $accessToken === '') {
             throw new AuthenticationException('Dropbox token endpoint returned an unexpected response.');
         }
 
+        $expiresIn = $data['expires_in'] ?? null;
+
         $refreshed = $token->withRefreshed(
-            accessToken: $data['access_token'],
-            expiresAt: isset($data['expires_in']) ? CarbonImmutable::now()->addSeconds((int) $data['expires_in']) : null,
+            accessToken: $accessToken,
+            expiresAt: is_numeric($expiresIn) ? CarbonImmutable::now()->addSeconds((int) $expiresIn) : null,
         );
 
         $this->setAccessToken($refreshed);
@@ -189,7 +195,7 @@ class DropboxClient
     public function appCheck(string $path, array $body): ?array
     {
         $response = $this->pending()
-            ->withBasicAuth((string) config('dropbox.clientId'), (string) config('dropbox.clientSecret'))
+            ->withBasicAuth($this->configString('clientId'), $this->configString('clientSecret'))
             ->withBody(json_encode($body, JSON_THROW_ON_ERROR), 'application/json')
             ->post(Endpoints::Api->url($path));
 
@@ -209,7 +215,7 @@ class DropboxClient
         $response = $this->pending()
             ->withToken($this->bearerToken())
             ->withHeaders(['Dropbox-API-Arg' => json_encode($arguments, JSON_THROW_ON_ERROR)])
-            ->withBody($body, 'application/octet-stream')
+            ->withBody(Utils::streamFor($body), 'application/octet-stream')
             ->post(Endpoints::Content->url($path));
 
         return $this->decode($response);
@@ -248,7 +254,7 @@ class DropboxClient
     {
         $configToken = config('dropbox.accessToken');
 
-        if (filled($configToken)) {
+        if (is_string($configToken) && $configToken !== '') {
             return $configToken;
         }
 
@@ -263,17 +269,17 @@ class DropboxClient
 
     protected function pending(): PendingRequest
     {
-        return Http::timeout((int) config('dropbox.timeout', 30))
+        return Http::timeout($this->configInt('timeout', 30))
             ->retry(
-                (int) config('dropbox.retries', 3),
-                fn (int $attempt, Throwable $exception): int => $this->retryDelay($attempt, $exception),
+                $this->configInt('retries', 3),
+                fn (int $attempt, mixed $exception): int => $this->retryDelay($attempt, $exception),
                 fn (Throwable $exception): bool => $exception instanceof ConnectionException
                     || ($exception instanceof RequestException && $exception->response->status() === 429),
                 throw: false,
             );
     }
 
-    protected function retryDelay(int $attempt, Throwable $exception): int
+    protected function retryDelay(int $attempt, mixed $exception): int
     {
         if ($exception instanceof RequestException) {
             $retryAfter = $exception->response->header('Retry-After');
@@ -299,7 +305,7 @@ class DropboxClient
             return null;
         }
 
-        return $response->json();
+        return Arr::stringKeyed($response->json());
     }
 
     protected function handleFailure(Response $response): never
@@ -309,5 +315,32 @@ class DropboxClient
             429 => RateLimitException::fromResponse($response),
             default => DropboxException::fromResponse($response),
         };
+    }
+
+    protected function resolveConfiguredStorage(): StorageAdapterInterface
+    {
+        $storage = config('dropbox.storage');
+
+        $adapter = is_string($storage) ? app($storage) : $storage;
+
+        if (! $adapter instanceof StorageAdapterInterface) {
+            throw new InvalidArgumentException('The dropbox.storage config value must reference a class implementing '.StorageAdapterInterface::class.'.');
+        }
+
+        return $adapter;
+    }
+
+    protected function configString(string $key): string
+    {
+        $value = config("dropbox.{$key}");
+
+        return is_string($value) ? $value : '';
+    }
+
+    protected function configInt(string $key, int $default): int
+    {
+        $value = config("dropbox.{$key}");
+
+        return is_numeric($value) ? (int) $value : $default;
     }
 }

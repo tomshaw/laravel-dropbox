@@ -4,6 +4,7 @@ namespace TomShaw\Dropbox\Resources;
 
 use InvalidArgumentException;
 use TomShaw\Dropbox\Enums\WriteMode;
+use TomShaw\Dropbox\Support\Arr;
 
 class DropboxFiles extends DropboxResource
 {
@@ -14,6 +15,9 @@ class DropboxFiles extends DropboxResource
 
     public const DEFAULT_CHUNK_BYTES = 48 * 1024 * 1024;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function createFolder(string $path, bool $autorename = false): ?array
     {
         return $this->client->rpc('files/create_folder_v2', [
@@ -22,6 +26,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function listFolder(string $path = '', bool $recursive = false, bool $includeDeleted = false, ?int $limit = null, bool $includeMediaInfo = false): ?array
     {
         return $this->client->rpc('files/list_folder', array_filter([
@@ -33,6 +40,9 @@ class DropboxFiles extends DropboxResource
         ], fn (mixed $value): bool => $value !== null));
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function listFolderContinue(string $cursor): ?array
     {
         return $this->client->rpc('files/list_folder/continue', [
@@ -40,6 +50,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function copy(string $fromPath, string $toPath, bool $autorename = false, bool $allowOwnershipTransfer = false): ?array
     {
         return $this->client->rpc('files/copy_v2', [
@@ -50,6 +63,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function move(string $fromPath, string $toPath, bool $autorename = false, bool $allowOwnershipTransfer = false): ?array
     {
         return $this->client->rpc('files/move_v2', [
@@ -60,6 +76,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function delete(string $path): ?array
     {
         return $this->client->rpc('files/delete_v2', [
@@ -69,6 +88,7 @@ class DropboxFiles extends DropboxResource
 
     /**
      * @param  array<int, string>  $paths
+     * @return array<string, mixed>|null
      */
     public function deleteBatch(array $paths): ?array
     {
@@ -77,6 +97,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function deleteBatchCheck(string $asyncJobId): ?array
     {
         return $this->client->rpc('files/delete_batch/check', [
@@ -84,6 +107,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function permanentlyDelete(string $path): ?array
     {
         return $this->client->rpc('files/permanently_delete', [
@@ -91,6 +117,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function search(string $query, string $path = '', int $maxResults = 100, bool $includeHighlights = false, bool $filenameOnly = false): ?array
     {
         $options = [
@@ -111,6 +140,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function searchContinue(string $cursor): ?array
     {
         return $this->client->rpc('files/search/continue_v2', [
@@ -118,6 +150,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getMetadata(string $path, bool $includeDeleted = false, bool $includeMediaInfo = false): ?array
     {
         return $this->client->rpc('files/get_metadata', [
@@ -127,6 +162,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getTemporaryLink(string $path): ?array
     {
         return $this->client->rpc('files/get_temporary_link', [
@@ -134,6 +172,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function listRevisions(string $path, int $limit = 10): ?array
     {
         return $this->client->rpc('files/list_revisions', [
@@ -142,6 +183,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function restore(string $path, string $rev): ?array
     {
         return $this->client->rpc('files/restore', [
@@ -150,6 +194,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function saveUrl(string $path, string $url): ?array
     {
         return $this->client->rpc('files/save_url', [
@@ -158,6 +205,9 @@ class DropboxFiles extends DropboxResource
         ]);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function saveUrlCheckJobStatus(string $asyncJobId): ?array
     {
         return $this->client->rpc('files/save_url/check_job_status', [
@@ -212,6 +262,8 @@ class DropboxFiles extends DropboxResource
     /**
      * Stream a file directly to a local path without buffering it in memory.
      * Returns the file metadata from the Dropbox-API-Result header.
+     *
+     * @return array<string, mixed>|null
      */
     public function downloadTo(string $path, string $localPath): ?array
     {
@@ -221,12 +273,14 @@ class DropboxFiles extends DropboxResource
 
         $result = $response->header('Dropbox-API-Result');
 
-        return $result !== '' ? json_decode($result, true) : null;
+        return $result !== '' ? Arr::stringKeyed(json_decode($result, true)) : null;
     }
 
     /**
      * Upload a local file. Files above the 150 MB single-request limit are
      * automatically uploaded through an upload session.
+     *
+     * @return array<string, mixed>|null
      */
     public function upload(string $destinationPath, string $sourceFilePath, WriteMode $mode = WriteMode::Add, bool $autorename = false, bool $mute = false, bool $strictConflict = false, int $chunkSize = self::DEFAULT_CHUNK_BYTES): ?array
     {
@@ -250,9 +304,15 @@ class DropboxFiles extends DropboxResource
     /**
      * Upload a local file of any size through an upload session, sending it
      * in sequential chunks.
+     *
+     * @return array<string, mixed>|null
      */
     public function uploadSession(string $destinationPath, string $sourceFilePath, WriteMode $mode = WriteMode::Add, bool $autorename = false, bool $mute = false, bool $strictConflict = false, int $chunkSize = self::DEFAULT_CHUNK_BYTES): ?array
     {
+        if ($chunkSize < 1) {
+            throw new InvalidArgumentException('Upload chunk size must be at least one byte.');
+        }
+
         $this->assertReadableFile($sourceFilePath);
 
         $stream = $this->openFile($sourceFilePath);

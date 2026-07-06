@@ -2,6 +2,8 @@
 
 namespace TomShaw\Dropbox\Storage;
 
+use TomShaw\Dropbox\Support\Arr;
+
 class SessionTokenStorage implements StorageAdapterInterface
 {
     public const SESSION_KEY = 'dropbox_token';
@@ -13,7 +15,7 @@ class SessionTokenStorage implements StorageAdapterInterface
 
     public function get(): ?array
     {
-        return session()->get(self::SESSION_KEY);
+        return Arr::stringKeyed(session()->get(self::SESSION_KEY));
     }
 
     public function delete(): bool

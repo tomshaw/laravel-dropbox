@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.5.0...v1.6.0) (2026-07-06)
+
+
+### Features
+
+* enhance Dropbox SDK with improved error handling, storage resolution, and type safety ([4ae1d60](https://github.com/tomshaw/laravel-dropbox/commit/4ae1d606a0a4058cd876458ca04acaf1746f2927))
+
 ## [1.5.0](https://github.com/tomshaw/laravel-dropbox/compare/v1.4.0...v1.5.0) (2026-05-07)
 
 
